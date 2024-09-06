@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <title>Weather App</title>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+
+  <!-- Weather App Container -->
+  <div class="bg-gray-800 p-8 rounded-lg shadow-md w-80">
+    <h1 class="text-2xl font-bold mb-6 text-center">Weather App</h1>
+    
+    <!-- Input for location -->
+    <div class="mb-4">
+      <input type="text" id="location" placeholder="Enter location" class="w-full px-3 py-2 rounded focus:outline-none text-gray-800">
+    </div>
+    
+    <!-- Button to fetch weather -->
+    <button onclick="fetchWeather()" class="w-full py-2 bg-blue-500 rounded hover:bg-blue-600 transition">Get Weather</button>
+
+    <!-- Display weather information -->
+    <div id="weather-info" class="mt-6 text-center hidden">
+      <p id="weather-location" class="text-xl font-semibold"></p>
+      <p id="weather-description" class="mt-2"></p>
+      <p id="weather-temp" class="mt-2"></p>
+    </div>
+  </div>
+
+  <script>
+   async function fetchWeather() {
+  const location = document.getElementById('location').value.trim();
+  if (!location) {
+    alert('Please enter a location.');
+    return;
+  }
+
+  const apiKey = 'ca915741f4198143102fde7b8e218d21'; // Replace with your OpenWeather API key
+  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(location)}&appid=${apiKey}&units=metric`;
+
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    
+    if (response.ok) {
+      document.getElementById('weather-info').classList.remove('hidden');
+      document.getElementById('weather-location').textContent = `${data.name}, ${data.sys.country}`;
+      document.getElementById('weather-description').textContent = data.weather[0].description;
+      document.getElementById('weather-temp').textContent = `Temperature: ${data.main.temp}°C`;
+    } else {
+      alert('Location not found. Please enter a valid location.');
+    }
+  } catch (error) {
+    console.error('Error fetching weather data:', error);
+  }
+}
+
+  </script>
+</body>
+</html>
